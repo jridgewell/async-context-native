@@ -1,0 +1,20 @@
+{
+  "name": "async-context-native",
+  "version": "0.0.0",
+  "description": "Node.js Addons Example #1",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "bindings": "~1.2.1",
+    "nan": "^2.0.0"
+  },
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "pretest": "npm run build",
+    "test": "mocha tests"
+  },
+  "gypfile": true,
+  "devDependencies": {
+    "mocha": "10.2.0"
+  }
+}
