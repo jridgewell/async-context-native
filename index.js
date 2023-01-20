@@ -1,6 +1,6 @@
-const { getContext, setContext } = require("bindings")("async-context");
+const { getContext, setContext, setUnhandledRejection } = require("bindings")("async-context");
 
-module.exports = class AsyncContext {
+exports.AsyncContext = class AsyncContext {
   static wrap(fn) {
     const snapshot = getContext();
     return function (...args) {
@@ -17,6 +17,16 @@ module.exports = class AsyncContext {
   get() {
     return getContext()?.get(this);
   }
+};
+
+// It's not possible to patch node's unhandledRejection event to restore the
+// proper context. So if you care to get the events, you need to use this to
+// register your unhandledRejection events.
+//
+// **NOTE** This prevents `process.on('unhandledRejection', …)` from working.
+exports.setUnhandledRejection = function(handler) {
+  if (typeof handler !== 'function') handler = undefined;
+  setUnhandledRejection(handler);
 };
 
 function run(next, fn, binding, args) {

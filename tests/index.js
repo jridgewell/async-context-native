@@ -1,4 +1,4 @@
-const AsyncContext = require("..");
+const { AsyncContext, setUnhandledRejection } = require("..");
 const { strict: assert } = require("assert");
 
 it("get", () => {
@@ -26,4 +26,22 @@ it("async await", async () => {
     assert.equal(ctx.get(), 1);
   });
   assert.equal(ctx.get(), undefined);
+});
+
+it("triggers unhandledRejection", () => {
+  const ctx = new AsyncContext();
+
+  let value;
+  setUnhandledRejection(function(type) {
+    switch (type) {
+      case "unhandledRejection":
+        value = ctx.get();
+    }
+  });
+
+  ctx.run(1, () => {
+    Promise.reject();
+  });
+
+  assert.equal(value, 1);
 });
